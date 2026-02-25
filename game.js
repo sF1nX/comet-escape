@@ -78,39 +78,127 @@ function drawBackground() {
 function drawShip() {
   const x = laneX(player.lane);
   const y = player.y;
+  const wobble = Math.sin(performance.now() * 0.01) * 1.5;
 
   ctx.save();
-  ctx.translate(x, y);
-  ctx.fillStyle = "#5bc0be";
+  ctx.translate(x, y + wobble);
+
+  const bodyGrad = ctx.createLinearGradient(0, -34, 0, 26);
+  bodyGrad.addColorStop(0, "#e8f7ff");
+  bodyGrad.addColorStop(1, "#8cb7d8");
+  ctx.fillStyle = bodyGrad;
   ctx.beginPath();
-  ctx.moveTo(0, -player.radius - 6);
-  ctx.lineTo(player.radius, player.radius);
-  ctx.lineTo(-player.radius, player.radius);
+  ctx.moveTo(0, -36);
+  ctx.lineTo(16, -8);
+  ctx.lineTo(16, 18);
+  ctx.lineTo(-16, 18);
+  ctx.lineTo(-16, -8);
   ctx.closePath();
   ctx.fill();
 
-  ctx.fillStyle = "#ffd166";
+  ctx.fillStyle = "#ff6666";
   ctx.beginPath();
-  ctx.arc(0, 4, 8, 0, Math.PI * 2);
+  ctx.moveTo(0, -44);
+  ctx.lineTo(13, -16);
+  ctx.lineTo(-13, -16);
+  ctx.closePath();
   ctx.fill();
+
+  ctx.fillStyle = "#ff5f5f";
+  ctx.beginPath();
+  ctx.moveTo(-16, 8);
+  ctx.lineTo(-28, 18);
+  ctx.lineTo(-16, 18);
+  ctx.closePath();
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(16, 8);
+  ctx.lineTo(28, 18);
+  ctx.lineTo(16, 18);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = "#2f4763";
+  ctx.fillRect(-7, 18, 14, 6);
+
+  const flameGrad = ctx.createLinearGradient(0, 24, 0, 52);
+  flameGrad.addColorStop(0, "rgba(255,245,180,1)");
+  flameGrad.addColorStop(0.55, "rgba(255,130,60,0.95)");
+  flameGrad.addColorStop(1, "rgba(255,70,20,0)");
+  ctx.fillStyle = flameGrad;
+  ctx.beginPath();
+  ctx.moveTo(0, 22);
+  ctx.lineTo(8, 40);
+  ctx.lineTo(0, 50 + Math.sin(performance.now() * 0.04) * 3);
+  ctx.lineTo(-8, 40);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.fillStyle = "#6cd6ff";
+  ctx.beginPath();
+  ctx.arc(0, -3, 6.5, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = "rgba(255,255,255,.8)";
+  ctx.lineWidth = 1.8;
+  ctx.stroke();
+
   ctx.restore();
 }
 
 function drawComet(comet) {
   const x = laneX(comet.lane);
   const y = comet.y;
+  const tailLen = 90 + comet.radius * 1.6;
+  const sway = Math.sin(comet.spin * 1.7) * 8;
 
   ctx.save();
-  ctx.translate(x, y);
-  ctx.rotate(comet.spin);
-  ctx.fillStyle = "#f26d5b";
+  ctx.translate(x, y + sway * 0.15);
+
+  const tailGrad = ctx.createLinearGradient(0, 16, 0, -tailLen);
+  tailGrad.addColorStop(0, "rgba(255,220,120,0.92)");
+  tailGrad.addColorStop(0.35, "rgba(255,140,60,0.7)");
+  tailGrad.addColorStop(1, "rgba(255,70,20,0)");
+  ctx.fillStyle = tailGrad;
+  ctx.beginPath();
+  ctx.moveTo(-comet.radius * 0.8, -2);
+  ctx.quadraticCurveTo(-26 + sway, -tailLen * 0.45, -10 + sway, -tailLen);
+  ctx.quadraticCurveTo(0, -tailLen - 12, 10 - sway, -tailLen);
+  ctx.quadraticCurveTo(26 - sway, -tailLen * 0.45, comet.radius * 0.8, -2);
+  ctx.closePath();
+  ctx.fill();
+
+  const aura = ctx.createRadialGradient(0, 0, comet.radius * 0.2, 0, 0, comet.radius * 2);
+  aura.addColorStop(0, "rgba(255,250,180,0.45)");
+  aura.addColorStop(1, "rgba(255,120,40,0)");
+  ctx.fillStyle = aura;
+  ctx.beginPath();
+  ctx.arc(0, 0, comet.radius * 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  const rockGrad = ctx.createRadialGradient(
+    -comet.radius * 0.25,
+    -comet.radius * 0.35,
+    comet.radius * 0.2,
+    0,
+    0,
+    comet.radius,
+  );
+  rockGrad.addColorStop(0, "#ffb07a");
+  rockGrad.addColorStop(0.55, "#f06c4f");
+  rockGrad.addColorStop(1, "#a83e2e");
+  ctx.fillStyle = rockGrad;
   ctx.beginPath();
   ctx.arc(0, 0, comet.radius, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.fillStyle = "#ffd7c8";
+  ctx.fillStyle = "rgba(255,245,200,.9)";
   ctx.beginPath();
-  ctx.arc(comet.radius * 0.25, -comet.radius * 0.2, comet.radius * 0.22, 0, Math.PI * 2);
+  ctx.arc(comet.radius * 0.2, -comet.radius * 0.24, comet.radius * 0.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "rgba(255,165,90,.45)";
+  ctx.beginPath();
+  ctx.arc(-comet.radius * 0.33, comet.radius * 0.2, comet.radius * 0.24, 0, Math.PI * 2);
   ctx.fill();
   ctx.restore();
 }
