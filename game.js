@@ -207,16 +207,16 @@ function crash() {
   running = false;
   paused = false;
   overlay.classList.remove("hidden");
-  statusEl.textContent = `Игра окончена. Счёт: ${score}. Нажми "Ещё раз".`;
-  startBtn.textContent = "Ещё раз";
+  statusEl.textContent = `Game Over. Score: ${score}. Press "Play Again".`;
+  startBtn.textContent = "Play Again";
 }
 
 function pauseGame() {
   if (!running || paused) return;
   paused = true;
   overlay.classList.remove("hidden");
-  statusEl.textContent = "Пауза. Нажми пробел или кнопку ниже, чтобы продолжить.";
-  startBtn.textContent = "Продолжить";
+  statusEl.textContent = "Paused. Press Space or the button below to continue.";
+  startBtn.textContent = "Resume";
 }
 
 function resumeGame() {
@@ -317,9 +317,9 @@ function startGame() {
   paused = false;
   player.lane = 1;
   scoreEl.textContent = "0";
-  statusEl.textContent = "Уклоняйся от комет. Стрелки / A D / свайпы.";
+  statusEl.textContent = "Dodge the comets. Arrow keys / A D / swipes.";
   overlay.classList.add("hidden");
-  startBtn.textContent = "Старт";
+  startBtn.textContent = "Start";
   running = true;
   lastTime = 0;
   requestAnimationFrame(loop);
