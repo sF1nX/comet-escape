@@ -21,6 +21,7 @@ const player = {
 };
 
 let running = false;
+let paused = false;
 let score = 0;
 let best = Number(localStorage.getItem("comet_escape_best") || 0);
 let comets = [];
@@ -116,9 +117,30 @@ function drawComet(comet) {
 
 function crash() {
   running = false;
+  paused = false;
   overlay.classList.remove("hidden");
   statusEl.textContent = `Игра окончена. Счёт: ${score}. Нажми "Ещё раз".`;
   startBtn.textContent = "Ещё раз";
+}
+
+function pauseGame() {
+  if (!running || paused) return;
+  paused = true;
+  overlay.classList.remove("hidden");
+  statusEl.textContent = "Пауза. Нажми пробел или кнопку ниже, чтобы продолжить.";
+  startBtn.textContent = "Продолжить";
+}
+
+function resumeGame() {
+  if (!running || !paused) return;
+  paused = false;
+  overlay.classList.add("hidden");
+}
+
+function togglePause() {
+  if (!running) return;
+  if (paused) resumeGame();
+  else pauseGame();
 }
 
 function update(delta) {
@@ -179,6 +201,12 @@ function loop(timestamp) {
     return;
   }
 
+  if (paused) {
+    render();
+    requestAnimationFrame(loop);
+    return;
+  }
+
   if (!lastTime) lastTime = timestamp;
   const delta = Math.min(0.05, (timestamp - lastTime) / 1000);
   lastTime = timestamp;
@@ -188,11 +216,17 @@ function loop(timestamp) {
 }
 
 function startGame() {
+  if (running && paused) {
+    resumeGame();
+    return;
+  }
+
   score = 0;
   speed = 220;
   cometTimer = 0;
   cometInterval = 0.9;
   comets = [];
+  paused = false;
   player.lane = 1;
   scoreEl.textContent = "0";
   statusEl.textContent = "Уклоняйся от комет. Стрелки / A D / свайпы.";
@@ -214,6 +248,13 @@ function moveRight() {
 startBtn.addEventListener("click", startGame);
 
 window.addEventListener("keydown", (event) => {
+  if (event.code === "Space" && event.repeat) return;
+
+  if (event.code === "Space" && running) {
+    togglePause();
+    return;
+  }
+
   if (!running && event.code === "Space") {
     startGame();
     return;
