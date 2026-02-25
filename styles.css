@@ -52,6 +52,8 @@ h1 {
 .game-shell {
   position: relative;
   width: min(96vw, 520px);
+  display: grid;
+  place-items: center;
   border-radius: 16px;
   overflow: hidden;
   border: 2px solid rgba(255, 255, 255, 0.2);
@@ -60,8 +62,9 @@ h1 {
 
 canvas {
   display: block;
-  width: 100%;
-  height: auto;
+  width: min(100%, 480px);
+  height: min(72vh, 720px);
+  max-height: calc(100vh - 220px);
   background:
     radial-gradient(circle at 50% -30%, rgba(255, 255, 255, 0.25), transparent 35%),
     linear-gradient(#0f1d3a, #111827);
@@ -117,4 +120,18 @@ button:active {
   .controls {
     display: flex;
   }
+}
+
+body.embedded .app {
+  padding: 8px;
+  gap: 8px;
+}
+
+body.embedded .hud {
+  display: none;
+}
+
+body.embedded canvas {
+  height: min(78vh, 720px);
+  max-height: calc(100vh - 120px);
 }

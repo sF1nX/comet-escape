@@ -8,6 +8,10 @@ const startBtn = document.getElementById("startBtn");
 const leftBtn = document.getElementById("leftBtn");
 const rightBtn = document.getElementById("rightBtn");
 
+if (window.self !== window.top) {
+  document.body.classList.add("embedded");
+}
+
 const lanes = [0.2, 0.4, 0.6, 0.8];
 const player = {
   lane: 1,
