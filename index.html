@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comet Escape</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hud">
+        <h1>Comet Escape</h1>
+        <div class="stats">
+          <span>Счёт: <b id="score">0</b></span>
+          <span>Рекорд: <b id="best">0</b></span>
+        </div>
+      </header>
+
+      <section class="game-shell">
+        <canvas id="game" width="480" height="720" aria-label="Игровое поле"></canvas>
+        <div class="overlay" id="overlay">
+          <p id="status">Уклоняйся от комет. Стрелки / A D / свайпы.</p>
+          <button id="startBtn">Старт</button>
+        </div>
+      </section>
+
+      <div class="controls">
+        <button id="leftBtn" aria-label="Влево">◀</button>
+        <button id="rightBtn" aria-label="Вправо">▶</button>
+      </div>
+    </main>
+
+    <script src="./game.js"></script>
+  </body>
+</html>
