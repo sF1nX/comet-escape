@@ -10,6 +10,7 @@ const rightBtn = document.getElementById("rightBtn");
 
 if (window.self !== window.top) {
   document.body.classList.add("embedded");
+  document.documentElement.classList.add("embedded");
 }
 
 const lanes = [0.2, 0.4, 0.6, 0.8];
