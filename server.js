@@ -1,7 +1,7 @@
 const crypto = require("crypto");
 const express = require("express");
 const cors = require("cors");
-const { OpenGameClient } = require("@opusgamelabs/server-sdk");
+const { PlayFunClient } = require("@playdotfun/server-sdk");
 
 const app = express();
 app.use(express.json());
@@ -22,7 +22,7 @@ app.use(
 );
 
 const GAME_ID = process.env.GAME_ID;
-const client = new OpenGameClient({
+const client = new PlayFunClient({
   apiKey: process.env.OGP_API_KEY || "",
   secretKey: process.env.OGP_API_SECRET_KEY || "",
 });
