@@ -7,6 +7,7 @@ const statusEl = document.getElementById("status");
 const startBtn = document.getElementById("startBtn");
 const leftBtn = document.getElementById("leftBtn");
 const rightBtn = document.getElementById("rightBtn");
+const backendUrl = String(window.PF_BACKEND_URL || "").replace(/\/+$/, "");
 
 if (window.self !== window.top) {
   document.body.classList.add("embedded");
@@ -24,6 +25,8 @@ let running = false;
 let paused = false;
 let score = 0;
 let best = Number(localStorage.getItem("comet_escape_best") || 0);
+let sessionId = null;
+let sessionStartedAt = 0;
 let comets = [];
 let cometTimer = 0;
 let cometInterval = 0.9;
@@ -33,6 +36,53 @@ let holdLeft = false;
 let holdRight = false;
 
 bestEl.textContent = best.toString();
+
+function getPlayerId() {
+  const key = "comet_escape_player_id";
+  let playerId = localStorage.getItem(key);
+  if (!playerId) {
+    playerId = crypto.randomUUID();
+    localStorage.setItem(key, playerId);
+  }
+  return playerId;
+}
+
+async function startBackendSession() {
+  if (!backendUrl) return;
+  try {
+    const response = await fetch(`${backendUrl}/api/session/start`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ playerId: getPlayerId() }),
+    });
+    if (!response.ok) return;
+    const data = await response.json();
+    sessionId = data.sessionId || null;
+    sessionStartedAt = Number(data.startedAt || Date.now());
+  } catch (_err) {
+    // Keep gameplay working even if backend is temporarily unavailable.
+  }
+}
+
+async function finishBackendSession(finalScore) {
+  if (!backendUrl || !sessionId) return;
+  try {
+    await fetch(`${backendUrl}/api/session/finish`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        sessionId,
+        playerId: getPlayerId(),
+        score: finalScore,
+        durationMs: Date.now() - sessionStartedAt,
+      }),
+    });
+  } catch (_err) {
+    // Do nothing; failed submissions should not break the game loop.
+  } finally {
+    sessionId = null;
+  }
+}
 
 function laneX(index) {
   return canvas.width * lanes[index];
@@ -206,6 +256,7 @@ function drawComet(comet) {
 function crash() {
   running = false;
   paused = false;
+  finishBackendSession(score);
   overlay.classList.remove("hidden");
   statusEl.textContent = `Game Over. Score: ${score}. Press "Play Again".`;
   startBtn.textContent = "Play Again";
@@ -322,6 +373,8 @@ function startGame() {
   startBtn.textContent = "Start";
   running = true;
   lastTime = 0;
+  sessionStartedAt = Date.now();
+  startBackendSession();
   requestAnimationFrame(loop);
 }
 

@@ -1,0 +1,14 @@
+{
+  "name": "comet-escape-server",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@opusgamelabs/server-sdk": "^0.4.1-alpha.7",
+    "cors": "^2.8.5",
+    "express": "^4.21.2"
+  }
+}

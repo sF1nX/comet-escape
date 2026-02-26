@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: comet-escape-api
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 20
+      - key: GAME_ID
+        sync: false
+      - key: OGP_API_KEY
+        sync: false
+      - key: OGP_API_SECRET_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: https://sf1nx.github.io
+      - key: MAX_SCORE_PER_SESSION
+        value: "250"
+      - key: MAX_SESSIONS_PER_DAY
+        value: "30"
+      - key: MAX_POINTS_PER_DAY
+        value: "3000"
+      - key: MIN_SESSION_MS
+        value: "8000"
